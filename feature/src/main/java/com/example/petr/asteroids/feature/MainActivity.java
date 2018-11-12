@@ -1,31 +1,42 @@
 package com.example.petr.asteroids.feature;
 
 import android.app.Activity;
-import android.graphics.Canvas;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Handler;
 import android.os.Bundle;
-import android.support.v7.app.WindowDecorActionBar;
-import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorEvent;
-import com.example.petr.asteroids.feature.Classes.Ship;
-import com.example.petr.asteroids.feature.Interfaces.IGameObject;
-
-import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
     SensorManager sensorManager;
+
+    View gameView;
+
+    public Handler frame = new Handler();
+
+    public boolean running = true;
+
+    private static final int FRAME_RATE = 40; //25 frames per se
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-        setContentView(new GameView(this.getBaseContext(), sensorManager));
+        this.gameView = new GameView(this.getBaseContext(), sensorManager);
+        setContentView(gameView);
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initGfx();
+            }
+        }, 1000);
+
     }
 
     @Override
@@ -34,15 +45,41 @@ public class MainActivity extends Activity {
         SensorEventListener gyroscopeSensorListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-                // More code goes here
+                GameView.gyroscopeEvent = sensorEvent;
             }
 
             @Override
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
         };
-        // Register the listener
-        sensorManager.registerListener(gyroscopeSensorListener,
-                gyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        Sensor gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        sensorManager.registerListener(
+                gyroscopeSensorListener,
+                gyroscopeSensor,
+                SensorManager.SENSOR_DELAY_NORMAL
+        );
+
+    }
+
+    public Runnable frameUpdate = new Runnable() {
+        @Override
+        synchronized public void run() {
+            running = true;
+            frame.removeCallbacks(frameUpdate);
+            gameView.invalidate();
+            frame.postDelayed(frameUpdate, FRAME_RATE);
+        }
+
+    };
+
+    synchronized public void initGfx() {
+        frame.removeCallbacks(frameUpdate);
+        frame.postDelayed(frameUpdate, FRAME_RATE);
+    }
+
+    @Override
+    public void finish(){
+        frame.removeCallbacks(frameUpdate);
+        super.finish();
     }
 }

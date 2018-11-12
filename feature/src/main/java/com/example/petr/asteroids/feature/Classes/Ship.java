@@ -30,7 +30,7 @@ public class Ship implements IGameObject {
         this.wingLength = 150;
     }
 
-    private void addToAngle(int add) {
+    public void addToAngle(int add) {
         this.angle += add;
         if (this.angle > 360) {
             this.angle -= 360;
@@ -48,12 +48,12 @@ public class Ship implements IGameObject {
         paint.setStrokeWidth(5);
         PositionVector secondPoint = MathHelper.getVectorByLengthAndAngle(
                 this.positionVector,
-                this.ANGLE_FOR_TRIANGLE,
+                this.angle + this.ANGLE_FOR_TRIANGLE,
                 this.wingLength
         );
         PositionVector thirdPoint = MathHelper.getVectorByLengthAndAngle(
                 this.positionVector,
-                -this.ANGLE_FOR_TRIANGLE,
+                this.angle - this.ANGLE_FOR_TRIANGLE,
                 this.wingLength
         );
         DrawHelper.DrawLine(canvas, this.positionVector, secondPoint, paint);

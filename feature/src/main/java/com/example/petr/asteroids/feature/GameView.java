@@ -3,12 +3,10 @@ package com.example.petr.asteroids.feature;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -16,18 +14,32 @@ import android.view.View;
 import com.example.petr.asteroids.feature.Classes.Ship;
 import com.example.petr.asteroids.feature.Interfaces.IGameObject;
 
+import java.io.Console;
 import java.util.ArrayList;
 
 /**
  * TODO: document your custom view class.
  */
 public class GameView extends View {
+
+    public enum DIRECTION {
+        LEFT, RIGHT
+    }
+
+    public static SensorEvent gyroscopeEvent;
+
     private float mExampleDimension = 0; // TODO: use a default from R.dimen...
     private Drawable mExampleDrawable;
 
+    private boolean gameRunning = true;
+
     ArrayList<IGameObject> gameObjects;
 
+    Ship ship;
+
     SensorManager sensorManager;
+
+    long lastTurnShip = 0;
 
     Sensor gyroscopeSensor;
 
@@ -56,6 +68,14 @@ public class GameView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
+    public void turnShip(DIRECTION direction) {
+        if (direction == DIRECTION.RIGHT) {
+            this.ship.addToAngle(45);
+        } else {
+            this.ship.addToAngle(-45);
+        }
+    }
+
     private void init(AttributeSet attrs, int defStyle) {
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(
@@ -74,40 +94,26 @@ public class GameView extends View {
 
         a.recycle();
         this.gameObjects = new ArrayList<>();
-        this.gameObjects.add(new Ship(250, 500));
-        this.gyroscopeSensor = this.sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        // Create a listener
-
-
+        this.ship = new Ship(250, 500);
+        this.gameObjects.add(this.ship);
     }
-
-
-
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        // TODO: consider storing these as member variables to reduce
-        // allocations per draw cycle.
-        int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-        int paddingRight = getPaddingRight();
-        int paddingBottom = getPaddingBottom();
-
-        int contentWidth = getWidth() - paddingLeft - paddingRight;
-        int contentHeight = getHeight() - paddingTop - paddingBottom;
-
-
-        // Draw the example drawable on top of the text.
-        /*
-        if (mExampleDrawable != null) {
-            mExampleDrawable.setBounds(paddingLeft, paddingTop,
-                    paddingLeft + contentWidth, paddingTop + contentHeight);
-            mExampleDrawable.draw(canvas);
-        }*/
-
-        Log.d("MyLog:", "onDraw");
+        long currentTime = System.currentTimeMillis();
+        /**
+         * @// TODO: 12.11.2018 use accelometer instead of gyroscope to have Absolute position not relative
+         */
+        if (currentTime - lastTurnShip > 200) {
+            if (GameView.gyroscopeEvent.values[2] > 0.5f) {
+                this.turnShip(DIRECTION.LEFT);
+            } else if (GameView.gyroscopeEvent.values[2] < -0.5f) {
+                this.turnShip(DIRECTION.RIGHT);
+            }
+            this.lastTurnShip = currentTime;
+        }
+        //Log.d("gyroscopeLo", Float.toString(GameView.gyroscopeEvent.values[2]));
         for (IGameObject gameObject : this.gameObjects) {
             gameObject.DrawOnCanvas(canvas);
         }
