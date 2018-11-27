@@ -59,6 +59,39 @@ public class MainActivity extends Activity {
                 SensorManager.SENSOR_DELAY_NORMAL
         );
 
+        SensorEventListener accelometerSensorListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                GameView.accelometerEvent = sensorEvent;
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+            }
+        };
+        Sensor accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(
+                accelometerSensorListener,
+                accSensor,
+                SensorManager.SENSOR_DELAY_NORMAL
+        );
+
+        SensorEventListener rotationListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                GameView.rotationEvent = sensorEvent;
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+            }
+        };
+        Sensor rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        sensorManager.registerListener(
+                rotationListener,
+                rotationSensor,
+                SensorManager.SENSOR_DELAY_NORMAL
+        );
     }
 
     public Runnable frameUpdate = new Runnable() {

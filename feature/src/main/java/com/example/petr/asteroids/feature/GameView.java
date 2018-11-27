@@ -28,6 +28,10 @@ public class GameView extends View {
 
     public static SensorEvent gyroscopeEvent;
 
+    public static SensorEvent accelometerEvent;
+
+    public static SensorEvent rotationEvent;
+
     private float mExampleDimension = 0; // TODO: use a default from R.dimen...
     private Drawable mExampleDrawable;
 
@@ -42,6 +46,7 @@ public class GameView extends View {
     long lastTurnShip = 0;
 
     Sensor gyroscopeSensor;
+
 
     private int screenWidth, screenHeigth;
 
@@ -106,9 +111,14 @@ public class GameView extends View {
          * @// TODO: 12.11.2018 use accelometer instead of gyroscope to have Absolute position not relative
          */
         if (currentTime - lastTurnShip > 200) {
-            if (GameView.gyroscopeEvent.values[2] > 0.5f) {
+            Log.d("MEINELOG", "Acc[0]" + Float.toString(GameView.accelometerEvent.values[0]));
+            Log.d("MEINELOGE0", "Rotation[0]" + Float.toString(GameView.rotationEvent.values[0]));
+            Log.d("MEINELOGE1", "Rotation[1]" + Float.toString(GameView.rotationEvent.values[1]));
+            Log.d("MEINELOGE2", "Rotation[2]" + Float.toString(GameView.rotationEvent.values[2]));
+            Log.d("MEINELOGE3", "Rotation[3]" + Float.toString(GameView.rotationEvent.values[3]));
+            if (GameView.accelometerEvent.values[0] > 1.0f) {
                 this.turnShip(DIRECTION.LEFT);
-            } else if (GameView.gyroscopeEvent.values[2] < -0.5f) {
+            } else if (GameView.accelometerEvent.values[0] < -1.0f) {
                 this.turnShip(DIRECTION.RIGHT);
             }
             this.lastTurnShip = currentTime;
