@@ -1,16 +1,13 @@
 package com.example.petr.asteroids.feature;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.example.petr.asteroids.feature.Classes.Asteroid;
@@ -26,18 +23,12 @@ import com.example.petr.asteroids.feature.Interfaces.IGameParticle;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-/**
- * TODO: document your custom view class.
- */
 public class GameView extends View {
 
     public enum DIRECTION {
         LEFT, RIGHT
     }
-
-    public static SensorEvent accelerometerEvent;
 
     public static SensorEvent orientationEvent;
 
@@ -48,9 +39,6 @@ public class GameView extends View {
     private double relativeZeroSpeed = 0;
 
     private boolean calibrated = false;
-
-    private float mExampleDimension = 0;
-    private Drawable mExampleDrawable;
 
     private boolean gameRunning = true;
 
@@ -175,7 +163,7 @@ public class GameView extends View {
         gameRunning = false;
     }
 
-    private boolean checkAsteroids(Canvas canvas) {
+    private boolean checkColisionsAsteroids(Canvas canvas) {
         ArrayList<Line> shipLines = this.ship.getLines();
         for (Iterator<IGameObject> asteroidIterator = this.asteroids.iterator(); asteroidIterator.hasNext(); ) {
             IGameObject asteroid = asteroidIterator.next();
@@ -197,8 +185,8 @@ public class GameView extends View {
                     for (Line asteroidLine : asteroidLines) {
                         for (Line shotLine : shotLines) {
                             if (shotLine.intersect(asteroidLine,canvas)) {
-                                this.explode(asteroid);
                                 asteroidIterator.remove();
+                                this.explode(asteroid);
                                 iteratorShots.remove();
                                 return false;
                             }
@@ -220,6 +208,28 @@ public class GameView extends View {
             PositionVector speedVector = MathHelper.getRandSpeedVector(-30, 30);
             this.gameParticles.add(new Particle(vector, speedVector, width, 5, Color.BLACK));
         }
+
+        if (asteroid.randomDefaultLengthLimit > Constants.LIMIT_OF_MIN_ASTEROID_LENGTH) {
+            PositionVector speed = MathHelper.getRandSpeedVector(Constants.MIN_ASTEROID_SPEED, Constants.MAX_ASTEROID_SPEED/2);
+            Asteroid newAsteroid = new Asteroid(
+                    asteroid.positionVector,
+                    speed,
+                    Constants.LIMIT_OF_MIN_ASTEROID_LENGTH
+            );
+            PositionVector speed2 = MathHelper.getRandSpeedVector(
+                    Constants.MIN_ASTEROID_SPEED,
+                    Constants.MAX_ASTEROID_SPEED/2
+            );
+            Asteroid newAsteroid2 = new Asteroid(
+                    asteroid.positionVector,
+                    speed2,
+                    Constants.LIMIT_OF_MIN_ASTEROID_LENGTH
+            );
+            this.asteroids.add(newAsteroid);
+            this.asteroids.add(newAsteroid2);
+        }
+
+
     }
 
     private void shot() {
@@ -292,7 +302,7 @@ public class GameView extends View {
             }
         }
 
-        if (currentTime - lastShot > 2000) {
+        if (currentTime - lastShot > 1000) {
             if (this.shotParticles.size() < Constants.SHOT_MAX_COUNT) {
                 this.shot();
             }
@@ -335,36 +345,7 @@ public class GameView extends View {
             }
         }
 
-        while(!checkAsteroids(canvas));
+        while(!checkColisionsAsteroids(canvas));
 
-    }
-
-    /**
-     * Gets the example dimension attribute value.
-     *
-     * @return The example dimension attribute value.
-     */
-    public float getExampleDimension() {
-        return mExampleDimension;
-    }
-
-
-    /**
-     * Gets the example drawable attribute value.
-     *
-     * @return The example drawable attribute value.
-     */
-    public Drawable getExampleDrawable() {
-        return mExampleDrawable;
-    }
-
-    /**
-     * Sets the view's example drawable attribute value. In the example view, this drawable is
-     * drawn above the text.
-     *
-     * @param exampleDrawable The example drawable attribute value to use.
-     */
-    public void setExampleDrawable(Drawable exampleDrawable) {
-        mExampleDrawable = exampleDrawable;
     }
 }

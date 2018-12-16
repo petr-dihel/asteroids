@@ -19,15 +19,20 @@ public class Line {
 
     public boolean intersect(Line line, Canvas canvas) {
         double det, gamma, lambda;
+
+        /*
+        * My visual control check
+        * */
         Paint p1 = new Paint();
         p1.setStrokeWidth(10);
         p1.setColor(Color.RED);
         DrawHelper.DrawLine(canvas, this.startVector, this.endVector, p1);
         p1.setColor(Color.CYAN);
-
         DrawHelper.DrawLine(canvas, line.startVector, line.endVector, p1);
-        //this.drawLine(ctx, "green");
-        //line.drawLine(ctx, "red");
+        /*
+         *end
+         */
+
         det = (this.endVector.getX() - this.startVector.getX())
                 * (line.endVector.getY() - line.startVector.getY())
                 - (line.endVector.getX() - line.startVector.getX())

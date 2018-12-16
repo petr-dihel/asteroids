@@ -42,24 +42,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        SensorEventListener accelometerSensorListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-                GameView.accelerometerEvent = sensorEvent;
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-            }
-        };
-        Sensor accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
-        sensorManager.registerListener(
-                accelometerSensorListener,
-                accSensor,
-                SensorManager.SENSOR_DELAY_NORMAL
-        );
-
         SensorEventListener orientationListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {

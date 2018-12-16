@@ -35,9 +35,9 @@ public class MathHelper {
     }
 
     public static PositionVector getRandSpeedVector(double minimumLimit, double maximumLimit) {
-        double range = 2*maximumLimit-minimumLimit+1;
-        double randX = (Math.floor(Math.random()*range))+1;
-        double randY = (Math.floor(Math.random()*range))+1;
+        double range = 2*(maximumLimit-minimumLimit+1);
+        double randX = (Math.floor(Math.random()*range))+minimumLimit+1;
+        double randY = (Math.floor(Math.random()*range))+minimumLimit+1;
         if (randX > maximumLimit/2) {
             randX *= -1;
         }
