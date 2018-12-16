@@ -42,54 +42,38 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        SensorEventListener gyroscopeSensorListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-                GameView.gyroscopeEvent = sensorEvent;
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-            }
-        };
-        Sensor gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        sensorManager.registerListener(
-                gyroscopeSensorListener,
-                gyroscopeSensor,
-                SensorManager.SENSOR_DELAY_NORMAL
-        );
 
         SensorEventListener accelometerSensorListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-                GameView.accelometerEvent = sensorEvent;
+                GameView.accelerometerEvent = sensorEvent;
             }
 
             @Override
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
         };
-        Sensor accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Sensor accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
         sensorManager.registerListener(
                 accelometerSensorListener,
                 accSensor,
                 SensorManager.SENSOR_DELAY_NORMAL
         );
 
-        SensorEventListener rotationListener = new SensorEventListener() {
+        SensorEventListener orientationListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-                GameView.rotationEvent = sensorEvent;
+                GameView.orientationEvent = sensorEvent;
             }
 
             @Override
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
         };
-        Sensor rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        Sensor orientationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
         sensorManager.registerListener(
-                rotationListener,
-                rotationSensor,
+                orientationListener,
+                orientationSensor,
                 SensorManager.SENSOR_DELAY_NORMAL
         );
     }

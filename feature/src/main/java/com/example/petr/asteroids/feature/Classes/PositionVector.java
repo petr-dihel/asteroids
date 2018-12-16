@@ -2,26 +2,26 @@ package com.example.petr.asteroids.feature.Classes;
 
 public class PositionVector {
 
-    private float x,y;
+    private double x,y;
 
-    public PositionVector(float x, float y) {
+    public PositionVector(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
-    public void addToX(float add) {
-        this.x = add;
+    public void addToX(double add) {
+        this.x += add;
     }
 
-    public void addToY(float add) {
-        this.y = add;
+    public void addToY(double add) {
+        this.y += add;
     }
 }
