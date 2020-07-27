@@ -1,2 +1,2 @@
 # asteroids
-gameinspired by old asteroid game
+mobile game inspired by old asteroid game
